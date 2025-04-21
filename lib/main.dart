@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'data/dummy_data.dart';
 import 'widgets/activity_card.dart';
-import 'models/activity.dart';
+import 'widgets/jeremy_card.dart';
 
 void main() {
   runApp(const TimeTrackingApp());
@@ -26,7 +26,7 @@ class TimeTrackingApp extends StatelessWidget {
 }
 
 class DashboardScreen extends StatefulWidget {
-  const DashboardScreen({super.key});
+  const DashboardScreen({Key? key}) : super(key: key);
 
   @override
   State<DashboardScreen> createState() => _DashboardScreenState();
@@ -35,63 +35,62 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   String selectedTimeframe = 'weekly';
 
+  Widget activityCardsGrid() {
+    return GridView.count(
+      crossAxisCount: MediaQuery.of(context).size.width < 600 ? 1 : 3,
+      mainAxisSpacing: 16,
+      crossAxisSpacing: 16,
+      padding: const EdgeInsets.only(top: 20),
+      childAspectRatio: 1.3,
+      children:
+          dummyData.map((data) {
+            final tf = data['timeframes'][selectedTimeframe];
+            return ActivityCard(
+              title: data['title'],
+              current: tf['current'],
+              previous: tf['previous'],
+              timeframe: selectedTimeframe,
+            );
+          }).toList(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final isMobile = MediaQuery.of(context).size.width < 600;
+
     return Scaffold(
       body: SafeArea(
-        child: Column(
-          children: [
-            const SizedBox(height: 20),
-            ToggleButtons(
-              borderRadius: BorderRadius.circular(12),
-              isSelected: [
-                selectedTimeframe == 'daily',
-                selectedTimeframe == 'weekly',
-                selectedTimeframe == 'monthly',
-              ],
-              onPressed: (index) {
-                setState(() {
-                  selectedTimeframe = ['daily', 'weekly', 'monthly'][index];
-                });
-              },
-              children: const [
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
-                  child: Text('Daily'),
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
-                  child: Text('Weekly'),
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
-                  child: Text('Monthly'),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-            Expanded(
-              child: GridView.count(
-                crossAxisCount: MediaQuery.of(context).size.width > 600 ? 3 : 1,
-                padding: const EdgeInsets.all(16),
-                mainAxisSpacing: 16,
-                crossAxisSpacing: 16,
-                children:
-                    dummyData.map((data) {
-                      final activity = Activity.fromMap(
-                        selectedTimeframe,
-                        data,
-                      );
-                      return ActivityCard(
-                        title: activity.title,
-                        current: activity.current,
-                        previous: activity.previous,
-                        timeframe: selectedTimeframe,
-                      );
-                    }).toList(),
-              ),
-            ),
-          ],
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child:
+              isMobile
+                  ? Column(
+                    children: [
+                      JeremyCard(
+                        selectedTimeframe: selectedTimeframe,
+                        onSelect:
+                            (tf) => setState(() => selectedTimeframe = tf),
+                      ),
+                      const SizedBox(height: 20),
+                      Expanded(child: activityCardsGrid()),
+                    ],
+                  )
+                  : Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        flex: 1,
+                        child: JeremyCard(
+                          selectedTimeframe: selectedTimeframe,
+                          onSelect:
+                              (tf) => setState(() => selectedTimeframe = tf),
+                        ),
+                      ),
+                      const SizedBox(width: 20),
+                      Expanded(flex: 3, child: activityCardsGrid()),
+                    ],
+                  ),
         ),
       ),
     );
