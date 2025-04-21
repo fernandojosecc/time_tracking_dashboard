@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'data/dummy_data.dart';
 import 'widgets/activity_card.dart';
+import 'models/activity.dart';
 
 void main() {
   runApp(const TimeTrackingApp());
@@ -77,11 +78,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 crossAxisSpacing: 16,
                 children:
                     dummyData.map((data) {
-                      final timeframe = data['timeframes'][selectedTimeframe];
+                      final activity = Activity.fromMap(
+                        selectedTimeframe,
+                        data,
+                      );
                       return ActivityCard(
-                        title: data['title'],
-                        current: timeframe['current'],
-                        previous: timeframe['previous'],
+                        title: activity.title,
+                        current: activity.current,
+                        previous: activity.previous,
                         timeframe: selectedTimeframe,
                       );
                     }).toList(),
