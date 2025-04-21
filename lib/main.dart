@@ -37,26 +37,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Widget activityCardsGrid() {
     return GridView.count(
-      crossAxisCount: MediaQuery.of(context).size.width < 600 ? 1 : 3,
+      crossAxisCount: MediaQuery.of(context).size.width < 800 ? 1 : 3,
       mainAxisSpacing: 16,
       crossAxisSpacing: 16,
-      padding: const EdgeInsets.only(top: 20),
-      childAspectRatio: 1.3,
+      padding: const EdgeInsets.all(16),
+      shrinkWrap: true,
+      childAspectRatio: 1.4,
+      physics: const NeverScrollableScrollPhysics(),
       children:
           dummyData.map((data) {
             final tf = data['timeframes'][selectedTimeframe];
-            return AnimatedSwitcher(
-              duration: const Duration(milliseconds: 300),
-              transitionBuilder:
-                  (child, animation) =>
-                      FadeTransition(opacity: animation, child: child),
-              child: ActivityCard(
-                key: ValueKey('${data['title']}_$selectedTimeframe'),
-                title: data['title'],
-                current: tf['current'],
-                previous: tf['previous'],
-                timeframe: selectedTimeframe,
-              ),
+            return ActivityCard(
+              key: ValueKey('${data['title']}_$selectedTimeframe'),
+              title: data['title'],
+              current: tf['current'],
+              previous: tf['previous'],
+              timeframe: selectedTimeframe,
             );
           }).toList(),
     );
@@ -64,40 +60,43 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isMobile = MediaQuery.of(context).size.width < 600;
+    final isMobile = MediaQuery.of(context).size.width < 800;
 
     return Scaffold(
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child:
-              isMobile
-                  ? Column(
-                    children: [
-                      JeremyCard(
-                        selectedTimeframe: selectedTimeframe,
-                        onSelect:
-                            (tf) => setState(() => selectedTimeframe = tf),
-                      ),
-                      const SizedBox(height: 20),
-                      Expanded(child: activityCardsGrid()),
-                    ],
-                  )
-                  : Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        flex: 1,
-                        child: JeremyCard(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child:
+                isMobile
+                    ? Column(
+                      children: [
+                        JeremyCard(
                           selectedTimeframe: selectedTimeframe,
                           onSelect:
                               (tf) => setState(() => selectedTimeframe = tf),
                         ),
-                      ),
-                      const SizedBox(width: 20),
-                      Expanded(flex: 3, child: activityCardsGrid()),
-                    ],
-                  ),
+                        const SizedBox(height: 20),
+                        activityCardsGrid(),
+                      ],
+                    )
+                    : Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Jeremy Card (same height as grid)
+                        SizedBox(
+                          height: 400,
+                          child: JeremyCard(
+                            selectedTimeframe: selectedTimeframe,
+                            onSelect:
+                                (tf) => setState(() => selectedTimeframe = tf),
+                          ),
+                        ),
+                        const SizedBox(width: 20),
+                        Expanded(child: activityCardsGrid()),
+                      ],
+                    ),
+          ),
         ),
       ),
     );
