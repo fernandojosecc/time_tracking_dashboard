@@ -117,11 +117,26 @@ class _ActivityCardState extends State<ActivityCard> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          widget.title,
-                          style: const TextStyle(color: Colors.white70),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              widget.title,
+                              style: const TextStyle(color: Colors.white70),
+                            ),
+                            SvgPicture.asset(
+                              'assets/images/icon-ellipsis.svg',
+                              width: 20,
+                              height: 5,
+                              colorFilter: const ColorFilter.mode(
+                                Colors.white54,
+                                BlendMode.srcIn,
+                              ),
+                            ),
+                          ],
                         ),
                         const SizedBox(height: 8),
+
                         Text(
                           '${widget.current} hrs',
                           style: const TextStyle(
