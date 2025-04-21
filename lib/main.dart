@@ -45,11 +45,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
       children:
           dummyData.map((data) {
             final tf = data['timeframes'][selectedTimeframe];
-            return ActivityCard(
-              title: data['title'],
-              current: tf['current'],
-              previous: tf['previous'],
-              timeframe: selectedTimeframe,
+            return AnimatedSwitcher(
+              duration: const Duration(milliseconds: 300),
+              transitionBuilder:
+                  (child, animation) =>
+                      FadeTransition(opacity: animation, child: child),
+              child: ActivityCard(
+                key: ValueKey('${data['title']}_$selectedTimeframe'),
+                title: data['title'],
+                current: tf['current'],
+                previous: tf['previous'],
+                timeframe: selectedTimeframe,
+              ),
             );
           }).toList(),
     );

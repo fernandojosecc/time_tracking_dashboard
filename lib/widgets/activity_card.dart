@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class ActivityCard extends StatelessWidget {
+class ActivityCard extends StatefulWidget {
   final String title;
   final int current;
   final int previous;
@@ -15,8 +15,15 @@ class ActivityCard extends StatelessWidget {
     required this.timeframe,
   });
 
+  @override
+  State<ActivityCard> createState() => _ActivityCardState();
+}
+
+class _ActivityCardState extends State<ActivityCard> {
+  bool isHovered = false;
+
   String get periodLabel {
-    switch (timeframe) {
+    switch (widget.timeframe) {
       case 'daily':
         return 'Yesterday';
       case 'weekly':
@@ -29,7 +36,7 @@ class ActivityCard extends StatelessWidget {
   }
 
   Color getColor() {
-    switch (title.toLowerCase()) {
+    switch (widget.title.toLowerCase()) {
       case 'work':
         return const Color(0xFFff8b64);
       case 'play':
@@ -48,7 +55,7 @@ class ActivityCard extends StatelessWidget {
   }
 
   String getIconPath() {
-    switch (title.toLowerCase()) {
+    switch (widget.title.toLowerCase()) {
       case 'work':
         return 'assets/images/icon-work.svg';
       case 'play':
@@ -68,51 +75,74 @@ class ActivityCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        // Background color container
-        Container(
-          decoration: BoxDecoration(
-            color: getColor(),
-            borderRadius: BorderRadius.circular(20),
-          ),
-        ),
-
-        // Icon at top right
-        Positioned(
-          right: 16,
-          top: -8,
-          child: SvgPicture.asset(getIconPath(), width: 80, height: 80),
-        ),
-
-        // Main content card
-        Positioned.fill(
-          top: 50,
-          child: Container(
-            decoration: BoxDecoration(
-              color: const Color(0xFF1c1f4a),
-              borderRadius: BorderRadius.circular(20),
+    return MouseRegion(
+      onEnter: (_) => setState(() => isHovered = true),
+      onExit: (_) => setState(() => isHovered = false),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        transform:
+            isHovered
+                ? (Matrix4.identity()..translate(0.0, -5.0))
+                : Matrix4.identity(),
+        child: Stack(
+          children: [
+            // Colored top container
+            Container(
+              decoration: BoxDecoration(
+                color: getColor(),
+                borderRadius: BorderRadius.circular(20),
+              ),
             ),
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(title, style: const TextStyle(color: Colors.white70)),
-                const SizedBox(height: 8),
-                Text(
-                  '$current hrs',
-                  style: const TextStyle(fontSize: 28, color: Colors.white),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  '${periodLabel} - $previous hrs',
-                  style: const TextStyle(color: Colors.grey),
-                ),
-              ],
+
+            // Background Icon
+            Positioned(
+              right: 16,
+              top: -8,
+              child: SvgPicture.asset(getIconPath(), width: 80, height: 80),
             ),
-          ),
+
+            // Content container
+            Positioned.fill(
+              top: 50,
+              child: Material(
+                color: const Color(0xFF1c1f4a),
+                borderRadius: BorderRadius.circular(20),
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(20),
+                  onTap: () {
+                    print('Tapped on ${widget.title}');
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.title,
+                          style: const TextStyle(color: Colors.white70),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          '${widget.current} hrs',
+                          style: const TextStyle(
+                            fontSize: 28,
+                            color: Colors.white,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          '${periodLabel} - ${widget.previous} hrs',
+                          style: const TextStyle(color: Colors.grey),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }
