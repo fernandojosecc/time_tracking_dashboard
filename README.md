@@ -1,16 +1,19 @@
-# time_tracking_dashboard
+# Time Tracking Dashboard 🕒
 
-A new Flutter project.
+A responsive Flutter dashboard UI based on the Frontend Mentor challenge.
+
+## Features
+- View daily, weekly, monthly stats
+- Edit hours per activity
+- Responsive design (mobile & desktop)
+- Built with Flutter 💙
+
+## Screenshots
+(add them later!)
 
 ## Getting Started
+1. Clone the repo
+2. Run `flutter pub get`
+3. Run the app!
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- [Online link](https://fernandojosecc.github.io/time_tracking_dashboard/)
