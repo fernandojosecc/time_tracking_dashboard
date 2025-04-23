@@ -6,6 +6,7 @@ class ActivityCard extends StatelessWidget {
   final int current;
   final int previous;
   final String timeframe;
+  final VoidCallback onEdit;
 
   const ActivityCard({
     super.key,
@@ -13,6 +14,7 @@ class ActivityCard extends StatelessWidget {
     required this.current,
     required this.previous,
     required this.timeframe,
+    required this.onEdit,
   });
 
   String get periodLabel {
@@ -117,14 +119,26 @@ class ActivityCard extends StatelessWidget {
                             title,
                             style: const TextStyle(color: Colors.white70),
                           ),
-                          SvgPicture.asset(
-                            'assets/images/icon-ellipsis.svg',
-                            width: 20,
-                            height: 5,
-                            colorFilter: const ColorFilter.mode(
-                              Colors.white54,
-                              BlendMode.srcIn,
-                            ),
+                          Row(
+                            children: [
+                              IconButton(
+                                icon: const Icon(
+                                  Icons.edit,
+                                  size: 18,
+                                  color: Colors.white38,
+                                ),
+                                onPressed: onEdit,
+                              ),
+                              SvgPicture.asset(
+                                'assets/images/icon-ellipsis.svg',
+                                width: 20,
+                                height: 5,
+                                colorFilter: const ColorFilter.mode(
+                                  Colors.white54,
+                                  BlendMode.srcIn,
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),

@@ -16,7 +16,7 @@ class JeremyCard extends StatelessWidget {
     final isMobile = screenWidth < 800;
 
     final double cardWidth = isMobile ? screenWidth * 0.9 : screenWidth * 0.25;
-    final double cardHeight = isMobile ? 360 : cardWidth * 2 + 16;
+    final double cardHeight = isMobile ? 360 : cardWidth * 1.35;
 
     return SizedBox(
       width: cardWidth,
@@ -24,7 +24,7 @@ class JeremyCard extends StatelessWidget {
       child: Column(
         children: [
           Flexible(
-            flex: 3,
+            flex: 4,
             child: Container(
               width: double.infinity,
               decoration: const BoxDecoration(
@@ -45,15 +45,15 @@ class JeremyCard extends StatelessWidget {
                   SizedBox(height: 20),
                   Text(
                     'Report for',
-                    style: TextStyle(color: Colors.white70, fontSize: 16),
+                    style: TextStyle(color: Colors.white70, fontSize: 20),
                   ),
                   SizedBox(height: 6),
                   Text(
                     'Jeremy Robson',
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 26,
-                      fontWeight: FontWeight.bold,
+                      fontSize: 50,
+                      fontWeight: FontWeight.normal,
                     ),
                   ),
                 ],
@@ -61,7 +61,7 @@ class JeremyCard extends StatelessWidget {
             ),
           ),
           Flexible(
-            flex: 1,
+            flex: 2,
             child: Container(
               width: double.infinity,
               decoration: const BoxDecoration(
@@ -71,29 +71,48 @@ class JeremyCard extends StatelessWidget {
                 ),
               ),
               padding: const EdgeInsets.symmetric(vertical: 20),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children:
-                    ['daily', 'weekly', 'monthly'].map((timeframe) {
-                      final isSelected = timeframe == selectedTimeframe;
-                      return GestureDetector(
-                        onTap: () => onSelect(timeframe),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 4),
-                          child: Text(
-                            timeframe[0].toUpperCase() + timeframe.substring(1),
-                            style: TextStyle(
-                              color: isSelected ? Colors.white : Colors.white60,
-                              fontWeight:
-                                  isSelected
-                                      ? FontWeight.bold
-                                      : FontWeight.normal,
-                              fontSize: 16,
+              child: Builder(
+                builder: (context) {
+                  final isMobile = MediaQuery.of(context).size.width < 800;
+
+                  final items =
+                      ['daily', 'weekly', 'monthly'].map((timeframe) {
+                        final isSelected = timeframe == selectedTimeframe;
+                        return GestureDetector(
+                          onTap: () => onSelect(timeframe),
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                              vertical: isMobile ? 0 : 10,
+                              horizontal: isMobile ? 12 : 30,
+                            ),
+                            child: Text(
+                              timeframe[0].toUpperCase() +
+                                  timeframe.substring(1),
+                              style: TextStyle(
+                                color:
+                                    isSelected ? Colors.white : Colors.white60,
+                                fontWeight:
+                                    isSelected
+                                        ? FontWeight.bold
+                                        : FontWeight.normal,
+                                fontSize: 16,
+                              ),
                             ),
                           ),
-                        ),
+                        );
+                      }).toList();
+
+                  return isMobile
+                      ? Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: items,
+                      )
+                      : Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: items,
                       );
-                    }).toList(),
+                },
               ),
             ),
           ),
