@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+/// This widget shows one activity card (Work, Play, etc.)
+/// It displays the current and previous hours, and lets the user edit them.
 class ActivityCard extends StatelessWidget {
-  final String title;
-  final int current;
-  final int previous;
-  final String timeframe;
-  final VoidCallback onEdit;
+  final String title; // Title of the activity (e.g. "Work")
+  final int current; // Current hours for the selected timeframe
+  final int previous; // Previous hours (e.g. yesterday, last week, etc.)
+  final String timeframe; // "daily", "weekly", or "monthly"
+  final VoidCallback onEdit; // Called when the user taps the edit button
 
   const ActivityCard({
     super.key,
@@ -17,6 +19,7 @@ class ActivityCard extends StatelessWidget {
     required this.onEdit,
   });
 
+  /// This gives the label like "Yesterday", "Last Week", etc.
   String get periodLabel {
     switch (timeframe) {
       case 'daily':
@@ -30,6 +33,7 @@ class ActivityCard extends StatelessWidget {
     }
   }
 
+  /// Returns the background color depending on the activity type
   Color getColor() {
     switch (title.toLowerCase()) {
       case 'work':
@@ -49,6 +53,7 @@ class ActivityCard extends StatelessWidget {
     }
   }
 
+  /// Returns the icon path (SVG image) based on the activity title
   String getIconPath() {
     switch (title.toLowerCase()) {
       case 'work':
@@ -70,6 +75,7 @@ class ActivityCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Make the card responsive to screen size
     final screenWidth = MediaQuery.of(context).size.width;
     final double cardWidth =
         screenWidth < 600 ? screenWidth * 0.9 : screenWidth * 0.25;
@@ -80,7 +86,7 @@ class ActivityCard extends StatelessWidget {
       height: cardHeight,
       child: Stack(
         children: [
-          // Background color
+          // Background color section (e.g. blue for play)
           Container(
             decoration: BoxDecoration(
               color: getColor(),
@@ -88,16 +94,16 @@ class ActivityCard extends StatelessWidget {
             ),
           ),
 
-          // Top-right icon
+          // Top-right background icon (like the little SVG)
           Positioned(
             right: 16,
             top: -8,
             child: SvgPicture.asset(getIconPath(), width: 80, height: 80),
           ),
 
-          // Foreground content container
+          // Main content area
           Positioned.fill(
-            top: 50,
+            top: 50, // Shift it down so the icon overlaps above
             child: Material(
               color: const Color(0xFF1c1f4a),
               borderRadius: BorderRadius.circular(20),
@@ -111,7 +117,7 @@ class ActivityCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Top row: Title + Ellipsis
+                      // Title and Edit button
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -127,7 +133,8 @@ class ActivityCard extends StatelessWidget {
                                   size: 18,
                                   color: Colors.white38,
                                 ),
-                                onPressed: onEdit,
+                                onPressed:
+                                    onEdit, // Calls the function passed from parent
                               ),
                             ],
                           ),
@@ -135,7 +142,7 @@ class ActivityCard extends StatelessWidget {
                       ),
                       const SizedBox(height: 8),
 
-                      // Current hours
+                      // Shows current hours
                       Text(
                         '$current hrs',
                         style: const TextStyle(
@@ -145,7 +152,7 @@ class ActivityCard extends StatelessWidget {
                       ),
                       const SizedBox(height: 8),
 
-                      // Previous label
+                      // Shows previous hours (e.g. "Last Week - 32 hrs")
                       Text(
                         '$periodLabel - $previous hrs',
                         style: const TextStyle(color: Colors.grey),
