@@ -129,15 +129,6 @@ class ActivityCard extends StatelessWidget {
                                 ),
                                 onPressed: onEdit,
                               ),
-                              SvgPicture.asset(
-                                'assets/images/icon-ellipsis.svg',
-                                width: 20,
-                                height: 5,
-                                colorFilter: const ColorFilter.mode(
-                                  Colors.white54,
-                                  BlendMode.srcIn,
-                                ),
-                              ),
                             ],
                           ),
                         ],

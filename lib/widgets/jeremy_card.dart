@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 
+/// This widget shows the left-side card with Jeremy's info
+/// and buttons to switch between Daily / Weekly / Monthly views.
 class JeremyCard extends StatelessWidget {
-  final String selectedTimeframe;
-  final Function(String) onSelect;
+  final String
+  selectedTimeframe; // Currently selected timeframe (e.g. "weekly")
+  final Function(String)
+  onSelect; // Function to call when user selects a new timeframe
 
   const JeremyCard({
     super.key,
@@ -12,9 +16,11 @@ class JeremyCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Get screen size to make the layout responsive
     final screenWidth = MediaQuery.of(context).size.width;
     final isMobile = screenWidth < 800;
 
+    // Adjust card size based on device
     final double cardWidth = isMobile ? screenWidth * 0.9 : screenWidth * 0.25;
     final double cardHeight = isMobile ? 360 : cardWidth * 1.35;
 
@@ -23,6 +29,7 @@ class JeremyCard extends StatelessWidget {
       height: cardHeight,
       child: Column(
         children: [
+          // Top section: purple background, avatar and name
           Flexible(
             flex: 4,
             child: Container(
@@ -60,6 +67,8 @@ class JeremyCard extends StatelessWidget {
               ),
             ),
           ),
+
+          // Bottom section: dark background with time filter buttons
           Flexible(
             flex: 2,
             child: Container(
@@ -75,11 +84,13 @@ class JeremyCard extends StatelessWidget {
                 builder: (context) {
                   final isMobile = MediaQuery.of(context).size.width < 800;
 
+                  // Create the list of buttons (Daily / Weekly / Monthly)
                   final items =
                       ['daily', 'weekly', 'monthly'].map((timeframe) {
                         final isSelected = timeframe == selectedTimeframe;
                         return GestureDetector(
-                          onTap: () => onSelect(timeframe),
+                          onTap:
+                              () => onSelect(timeframe), // Call parent callback
                           child: Padding(
                             padding: EdgeInsets.symmetric(
                               vertical: isMobile ? 0 : 10,
@@ -87,7 +98,9 @@ class JeremyCard extends StatelessWidget {
                             ),
                             child: Text(
                               timeframe[0].toUpperCase() +
-                                  timeframe.substring(1),
+                                  timeframe.substring(
+                                    1,
+                                  ), // Capitalize first letter
                               style: TextStyle(
                                 color:
                                     isSelected ? Colors.white : Colors.white60,
@@ -102,6 +115,7 @@ class JeremyCard extends StatelessWidget {
                         );
                       }).toList();
 
+                  // Layout the buttons: horizontal on mobile, vertical on desktop
                   return isMobile
                       ? Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
