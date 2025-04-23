@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class ActivityCard extends StatefulWidget {
+class ActivityCard extends StatelessWidget {
   final String title;
   final int current;
   final int previous;
@@ -15,15 +15,8 @@ class ActivityCard extends StatefulWidget {
     required this.timeframe,
   });
 
-  @override
-  State<ActivityCard> createState() => _ActivityCardState();
-}
-
-class _ActivityCardState extends State<ActivityCard> {
-  bool isHovered = false;
-
   String get periodLabel {
-    switch (widget.timeframe) {
+    switch (timeframe) {
       case 'daily':
         return 'Yesterday';
       case 'weekly':
@@ -36,7 +29,7 @@ class _ActivityCardState extends State<ActivityCard> {
   }
 
   Color getColor() {
-    switch (widget.title.toLowerCase()) {
+    switch (title.toLowerCase()) {
       case 'work':
         return const Color(0xFFff8b64);
       case 'play':
@@ -55,7 +48,7 @@ class _ActivityCardState extends State<ActivityCard> {
   }
 
   String getIconPath() {
-    switch (widget.title.toLowerCase()) {
+    switch (title.toLowerCase()) {
       case 'work':
         return 'assets/images/icon-work.svg';
       case 'play':
@@ -75,88 +68,90 @@ class _ActivityCardState extends State<ActivityCard> {
 
   @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-      onEnter: (_) => setState(() => isHovered = true),
-      onExit: (_) => setState(() => isHovered = false),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        transform:
-            isHovered
-                ? (Matrix4.identity()..translate(0.0, -5.0))
-                : Matrix4.identity(),
-        child: Stack(
-          children: [
-            // Colored top container
-            Container(
-              decoration: BoxDecoration(
-                color: getColor(),
-                borderRadius: BorderRadius.circular(20),
-              ),
+    final screenWidth = MediaQuery.of(context).size.width;
+    final double cardWidth =
+        screenWidth < 600 ? screenWidth * 0.9 : screenWidth * 0.25;
+    final double cardHeight = cardWidth * 0.85;
+
+    return SizedBox(
+      width: cardWidth,
+      height: cardHeight,
+      child: Stack(
+        children: [
+          // Background color
+          Container(
+            decoration: BoxDecoration(
+              color: getColor(),
+              borderRadius: BorderRadius.circular(20),
             ),
+          ),
 
-            // Background Icon
-            Positioned(
-              right: 16,
-              top: -8,
-              child: SvgPicture.asset(getIconPath(), width: 80, height: 80),
-            ),
+          // Top-right icon
+          Positioned(
+            right: 16,
+            top: -8,
+            child: SvgPicture.asset(getIconPath(), width: 80, height: 80),
+          ),
 
-            // Content container
-            Positioned.fill(
-              top: 50,
-              child: Material(
-                color: const Color(0xFF1c1f4a),
+          // Foreground content container
+          Positioned.fill(
+            top: 50,
+            child: Material(
+              color: const Color(0xFF1c1f4a),
+              borderRadius: BorderRadius.circular(20),
+              child: InkWell(
                 borderRadius: BorderRadius.circular(20),
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(20),
-                  onTap: () {
-                    print('Tapped on ${widget.title}');
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              widget.title,
-                              style: const TextStyle(color: Colors.white70),
-                            ),
-                            SvgPicture.asset(
-                              'assets/images/icon-ellipsis.svg',
-                              width: 20,
-                              height: 5,
-                              colorFilter: const ColorFilter.mode(
-                                Colors.white54,
-                                BlendMode.srcIn,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 8),
-
-                        Text(
-                          '${widget.current} hrs',
-                          style: const TextStyle(
-                            fontSize: 28,
-                            color: Colors.white,
+                onTap: () {
+                  print('Tapped on $title');
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Top row: Title + Ellipsis
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            title,
+                            style: const TextStyle(color: Colors.white70),
                           ),
+                          SvgPicture.asset(
+                            'assets/images/icon-ellipsis.svg',
+                            width: 20,
+                            height: 5,
+                            colorFilter: const ColorFilter.mode(
+                              Colors.white54,
+                              BlendMode.srcIn,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+
+                      // Current hours
+                      Text(
+                        '$current hrs',
+                        style: const TextStyle(
+                          fontSize: 28,
+                          color: Colors.white,
                         ),
-                        const SizedBox(height: 8),
-                        Text(
-                          '${periodLabel} - ${widget.previous} hrs',
-                          style: const TextStyle(color: Colors.grey),
-                        ),
-                      ],
-                    ),
+                      ),
+                      const SizedBox(height: 8),
+
+                      // Previous label
+                      Text(
+                        '$periodLabel - $previous hrs',
+                        style: const TextStyle(color: Colors.grey),
+                      ),
+                    ],
                   ),
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

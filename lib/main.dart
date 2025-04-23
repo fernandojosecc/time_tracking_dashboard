@@ -36,25 +36,30 @@ class _DashboardScreenState extends State<DashboardScreen> {
   String selectedTimeframe = 'weekly';
 
   Widget activityCardsGrid() {
-    return GridView.count(
-      crossAxisCount: MediaQuery.of(context).size.width < 800 ? 1 : 3,
-      mainAxisSpacing: 16,
-      crossAxisSpacing: 16,
-      padding: const EdgeInsets.all(16),
+    final isMobile = MediaQuery.of(context).size.width < 800;
+
+    return GridView.builder(
       shrinkWrap: true,
-      childAspectRatio: 1.4,
+      padding: const EdgeInsets.all(16),
       physics: const NeverScrollableScrollPhysics(),
-      children:
-          dummyData.map((data) {
-            final tf = data['timeframes'][selectedTimeframe];
-            return ActivityCard(
-              key: ValueKey('${data['title']}_$selectedTimeframe'),
-              title: data['title'],
-              current: tf['current'],
-              previous: tf['previous'],
-              timeframe: selectedTimeframe,
-            );
-          }).toList(),
+      itemCount: dummyData.length,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: isMobile ? 1 : 3,
+        crossAxisSpacing: 16,
+        mainAxisSpacing: 16,
+        childAspectRatio: 1.4,
+      ),
+      itemBuilder: (context, index) {
+        final data = dummyData[index];
+        final tf = data['timeframes'][selectedTimeframe];
+        return ActivityCard(
+          key: ValueKey('${data['title']}_$selectedTimeframe'),
+          title: data['title'],
+          current: tf['current'],
+          previous: tf['previous'],
+          timeframe: selectedTimeframe,
+        );
+      },
     );
   }
 
@@ -83,14 +88,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     : Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Jeremy Card (same height as grid)
-                        SizedBox(
-                          height: 400,
-                          child: JeremyCard(
-                            selectedTimeframe: selectedTimeframe,
-                            onSelect:
-                                (tf) => setState(() => selectedTimeframe = tf),
-                          ),
+                        JeremyCard(
+                          selectedTimeframe: selectedTimeframe,
+                          onSelect:
+                              (tf) => setState(() => selectedTimeframe = tf),
                         ),
                         const SizedBox(width: 20),
                         Expanded(child: activityCardsGrid()),

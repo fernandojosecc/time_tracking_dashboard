@@ -12,40 +12,43 @@ class JeremyCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 400, // Match the height of other cards
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        color: const Color(0xFF1c1f4a), // Outer container background
-      ),
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isMobile = screenWidth < 800;
+
+    final double cardWidth = isMobile ? screenWidth * 0.9 : screenWidth * 0.25;
+    final double cardHeight = isMobile ? 360 : cardWidth * 2 + 16;
+
+    return SizedBox(
+      width: cardWidth,
+      height: cardHeight,
       child: Column(
         children: [
-          // Top section (Jeremy info)
-          Expanded(
+          Flexible(
             flex: 3,
             child: Container(
+              width: double.infinity,
               decoration: const BoxDecoration(
                 color: Color(0xFF5746ea),
                 borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
               ),
               padding: const EdgeInsets.all(24),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const CircleAvatar(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  CircleAvatar(
                     radius: 30,
                     backgroundImage: AssetImage(
                       'assets/images/image-jeremy.png',
                     ),
                   ),
-                  const SizedBox(height: 20),
-                  const Text(
+                  SizedBox(height: 20),
+                  Text(
                     'Report for',
                     style: TextStyle(color: Colors.white70, fontSize: 16),
                   ),
-                  const SizedBox(height: 5),
-                  const Text(
+                  SizedBox(height: 6),
+                  Text(
                     'Jeremy Robson',
                     style: TextStyle(
                       color: Colors.white,
@@ -57,12 +60,17 @@ class JeremyCard extends StatelessWidget {
               ),
             ),
           ),
-
-          // Bottom section (timeframe switcher)
-          Expanded(
+          Flexible(
             flex: 1,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8),
+            child: Container(
+              width: double.infinity,
+              decoration: const BoxDecoration(
+                color: Color(0xFF1c1f4a),
+                borderRadius: BorderRadius.vertical(
+                  bottom: Radius.circular(20),
+                ),
+              ),
+              padding: const EdgeInsets.symmetric(vertical: 20),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children:
